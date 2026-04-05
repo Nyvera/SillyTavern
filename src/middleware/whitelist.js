@@ -81,7 +81,7 @@ async function addDockerHostsToWhitelist() {
         return;
     }
 
-    const whitelistHosts = ['host.docker.internal', 'gateway.docker.internal'];
+    const whitelistHosts = process.env.VERCEL_MODE === "true" ? [] : ["host.docker.internal", "gateway.docker.internal"];
 
     for (const entry of whitelistHosts) {
         try {
