@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs';
 import webpack from 'webpack';
 import getPublicLibConfig from '../../webpack.config.js';
 
@@ -12,9 +13,25 @@ export default function getWebpackServeMiddleware() {
      */
     function devMiddleware(req, res, next) {
         const publicLibConfig = getPublicLibConfig();
-        const outputPath = publicLibConfig.output?.path;
+        let outputPath = publicLibConfig.output?.path;
         const outputFile = publicLibConfig.output?.filename;
         const parsedPath = path.parse(req.path);
+
+        // In Vercel builds, the hash can differ between build-time and runtime metadata.
+        // Resolve the first available dist output folder containing lib.js.
+        if (process.env.VERCEL_MODE === 'true') {
+            const distWebpackRoot = path.resolve(process.cwd(), 'dist', '_webpack');
+            if (fs.existsSync(distWebpackRoot)) {
+                const candidates = fs.readdirSync(distWebpackRoot, { withFileTypes: true })
+                    .filter(dirent => dirent.isDirectory())
+                    .map(dirent => path.join(distWebpackRoot, dirent.name, 'output'));
+
+                const existing = candidates.find(candidate => fs.existsSync(path.join(candidate, 'lib.js')));
+                if (existing) {
+                    outputPath = existing;
+                }
+            }
+        }
 
         if (req.method === 'GET' && parsedPath.dir === '/' && parsedPath.base === outputFile) {
             return res.sendFile(outputFile, { root: outputPath });
