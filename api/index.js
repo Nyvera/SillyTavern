@@ -9,7 +9,6 @@ const tmpDataRoot = path.join(os.tmpdir(), 'sillytavern-data');
 if (!fs.existsSync(tmpDataRoot)) fs.mkdirSync(tmpDataRoot, { recursive: true });
 
 import { CommandLineParser } from '../src/command-line.js';
-import { serverDirectory } from '../src/server-directory.js';
 
 const cliArgs = new CommandLineParser().parse([
     'node', 
@@ -28,7 +27,8 @@ cliArgs.basicAuthMode = false;
 globalThis.DATA_ROOT = cliArgs.dataRoot;
 globalThis.COMMAND_LINE_ARGS = cliArgs;
 process.env.NODE_ENV = 'production';
-process.chdir(serverDirectory);
+// Keep cwd writable in serverless runtime for legacy relative paths like backups/.
+process.chdir(tmpDataRoot);
 
 let appReady = false;
 
