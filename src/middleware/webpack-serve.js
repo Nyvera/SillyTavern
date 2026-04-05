@@ -32,7 +32,8 @@ export default function getWebpackServeMiddleware() {
      */
     devMiddleware.runWebpackCompiler = ({ forceDist = false, pruneCache = false } = {}) => {
         console.log();
-        console.log('Compiling frontend libraries...');
+        if(process.env.VERCEL_MODE === "true") { console.log("Vercel Mode: Skipping Webpack Compilation."); return Promise.resolve(); }
+        console.log("Compiling frontend libraries...");
 
         const publicLibConfig = getPublicLibConfig({ forceDist, pruneCache });
         const compiler = webpack(publicLibConfig);

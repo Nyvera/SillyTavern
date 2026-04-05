@@ -62,7 +62,7 @@ const appVersion = await getVersion();
  * */
 export default function getPublicLibConfig({ forceDist = false, pruneCache = false } = {}) {
     function getWebpackRoot() {
-        if (forceDist || isDocker()) {
+        if (forceDist || isDocker() || process.env.VERCEL_MODE === 'true') {
             return path.resolve(process.cwd(), 'dist', '_webpack');
         }
 

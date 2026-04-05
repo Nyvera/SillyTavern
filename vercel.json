@@ -5,15 +5,12 @@
       "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["public/**", "node_modules/**"]
+        "includeFiles": ["public/**", "dist/**", "default/**"]
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.js"
-    }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.js" }
   ],
   "env": {
     "NODE_ENV": "production",

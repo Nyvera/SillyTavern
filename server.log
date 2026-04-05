@@ -1,0 +1,35 @@
+
+> sillytavern@1.17.0 start
+> node server.js
+
+Node version: v24.11.1. Running in undefined environment. Server directory: /workspaces/SillyTavern
+Using config path: ./config.yaml
+Failed to resolve whitelist hostname host.docker.internal: getaddrinfo ENOTFOUND host.docker.internal
+Failed to resolve whitelist hostname gateway.docker.internal: getaddrinfo ENOTFOUND gateway.docker.internal
+Using data root: ./data
+Preferring IPv4 for DNS resolution
+
+SillyTavern 1.17.0
+Running 'release' (74f80698d) - 4/5/2026, 8:59:20 PM UTC
+INFO: Currently not on the latest commit.
+      Run 'git pull' to update. If you have any merge conflicts, run 'git reset --hard' and 'git pull' to reset your branch.
+
+
+Compiling frontend libraries...
+webpack 5.105.4 compiled [1m[32msuccessfully[39m[22m in 10410 ms
+
+Launching in a browser: default...
+]2;SillyTavern WebServer\SillyTavern is listening on IPv4: 127.0.0.1:8000
+
+=================================================
+
+Go to: http://127.0.0.1:8000/ to open SillyTavern
+
+=================================================
+
+Blocked connection from 127.0.0.1 (forwarded from 10.241.0.36); User Agent: Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+	To allow this connection, add its IP address to the whitelist or disable whitelist mode by editing config.yaml in the root directory of your SillyTavern installation.
+
+Blocked connection from 127.0.0.1 (forwarded from 10.241.0.36); User Agent: Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+	To allow this connection, add its IP address to the whitelist or disable whitelist mode by editing config.yaml in the root directory of your SillyTavern installation.
+
