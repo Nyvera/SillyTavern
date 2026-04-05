@@ -3,6 +3,7 @@
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 // 1. Establish Ephemeral Filesystem Guardrails
 const tmpDataRoot = path.join(os.tmpdir(), 'sillytavern-data');
@@ -61,10 +62,12 @@ async function initApp() {
 // Vercel Serverless Handler
 export default async function (req, res) {
     try {
-        if (req.path === '/lib.js' || req.url === '/lib.js') {
+        const requestPath = String(req.path || req.url || '');
+        if (requestPath.startsWith('/lib.js')) {
+            const thisDir = path.dirname(fileURLToPath(import.meta.url));
             const roots = [
+                path.resolve(thisDir, '..', 'dist', '_webpack'),
                 path.resolve(process.cwd(), 'dist', '_webpack'),
-                path.resolve(process.cwd(), '..', 'dist', '_webpack'),
             ];
 
             for (const root of roots) {
