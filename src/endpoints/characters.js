@@ -883,8 +883,9 @@ async function importFromJson(uploadPath, { request }, preservedFileName) {
 
     let jsonData = JSON.parse(data);
 
-    if (jsonData.spec !== undefined) {
-        console.info(`Importing from ${jsonData.spec} json`);
+    if (jsonData.spec !== undefined || jsonData.data?.name !== undefined) {
+        const specLabel = jsonData.spec ?? 'chara_card_v2';
+        console.info(`Importing from ${specLabel} json`);
         importRisuSprites(request.user.directories, jsonData);
         unsetPrivateFields(jsonData);
         jsonData = readFromV2(jsonData);
@@ -967,8 +968,9 @@ async function importFromPng(uploadPath, { request }, preservedFileName) {
     jsonData.name = sanitize(jsonData.data?.name || jsonData.name);
     const pngName = preservedFileName || getPngName(jsonData.name, request.user.directories);
 
-    if (jsonData.spec !== undefined) {
-        console.info(`Found a ${jsonData.spec} character file.`);
+    if (jsonData.spec !== undefined || jsonData.data?.name !== undefined) {
+        const specLabel = jsonData.spec ?? 'chara_card_v2';
+        console.info(`Found a ${specLabel} character file.`);
         importRisuSprites(request.user.directories, jsonData);
         unsetPrivateFields(jsonData);
         jsonData = readFromV2(jsonData);
