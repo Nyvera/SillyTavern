@@ -61,6 +61,25 @@ async function initApp() {
 // Vercel Serverless Handler
 export default async function (req, res) {
     try {
+        if (req.path === '/lib.js' || req.url === '/lib.js') {
+            const roots = [
+                path.resolve(process.cwd(), 'dist', '_webpack'),
+                path.resolve(process.cwd(), '..', 'dist', '_webpack'),
+            ];
+
+            for (const root of roots) {
+                if (!fs.existsSync(root)) continue;
+                const dirs = fs.readdirSync(root, { withFileTypes: true }).filter(d => d.isDirectory());
+                for (const dir of dirs) {
+                    const libPath = path.join(root, dir.name, 'output', 'lib.js');
+                    if (fs.existsSync(libPath)) {
+                        res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+                        return res.send(fs.readFileSync(libPath));
+                    }
+                }
+            }
+        }
+
         const readyApp = await initApp();
         return readyApp(req, res);
     } catch (err) {
