@@ -1,15 +1,24 @@
 // Vercel Serverless Function Entry Point for SillyTavern (ESM Mode)
 
-import os from 'os';
-import path from 'path';
+import os from 'node:os';
+import path from 'node:path';
+import { CommandLineParser } from '../src/command-line.js';
+import { serverDirectory } from '../src/server-directory.js';
 
 // 1. Establish Ephemeral Filesystem Guardrails
-globalThis.DATA_ROOT = path.join(os.tmpdir(), 'sillytavern-data');
-globalThis.COMMAND_LINE_ARGS = {
-    dataRoot: globalThis.DATA_ROOT,
-    dnsPreferIPv6: false
-};
+const tmpDataRoot = path.join(os.tmpdir(), 'sillytavern-data');
+// Pass tmpdir seamlessly using CLI args parser which calls setConfigFilePath and sets up global variables
+const cliArgs = new CommandLineParser().parse([
+    'node', 
+    'server.js', 
+    '--dataRoot', tmpDataRoot, 
+    '--configPath', path.join(tmpDataRoot, 'config.yaml')
+]);
+
+globalThis.DATA_ROOT = cliArgs.dataRoot;
+globalThis.COMMAND_LINE_ARGS = cliArgs;
 process.env.NODE_ENV = 'production';
+process.chdir(serverDirectory);
 
 let appReady = false;
 

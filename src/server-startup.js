@@ -398,6 +398,10 @@ export class ServerStartup {
      * @returns {Promise<ServerStartupResult>} A promise that resolves with an object containing the results of the server startup
      */
     async start() {
+        if (process.env.VERCEL_MODE === "true") {
+            console.log("Vercel Mode: Skipping HTTP port bindings.");
+            return { useIPv6: false, useIPv4: true, v6Failed: true, v4Failed: false };
+        }
         let useIPv6 = (this.cliArgs.enableIPv6 === true);
         let useIPv4 = (this.cliArgs.enableIPv4 === true);
 
