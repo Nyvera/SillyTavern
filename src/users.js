@@ -529,6 +529,12 @@ export async function initUserStorage(dataRoot) {
  * @returns {string} The cookie secret
  */
 export function getCookieSecret(dataRoot) {
+    if (process.env.VERCEL_MODE === 'true') {
+        // Serverless instances can rotate hosts; derive a stable secret from env.
+        const seed = process.env.SILLY_COOKIE_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'sillytavern-vercel-cookie-secret';
+        return crypto.createHash('sha256').update(seed).digest('base64');
+    }
+
     const cookieSecretPath = path.join(dataRoot, COOKIE_SECRET_PATH);
 
     if (fs.existsSync(cookieSecretPath)) {
@@ -564,6 +570,10 @@ export function getPasswordSalt() {
  * @returns {string} The session name
  */
 export function getCookieSessionName() {
+    if (process.env.VERCEL_MODE === 'true') {
+        return 'session-vercel';
+    }
+
     // Get server hostname and hash it to generate a session suffix
     const hostname = os.hostname() || 'localhost';
     const suffix = crypto.createHash('sha256').update(hostname).digest('hex').slice(0, 8);
