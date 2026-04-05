@@ -272,6 +272,7 @@ setupPrivateEndpoints(app);
  * @returns {Promise<void>}
  */
 async function preSetupTasks() {
+    const isVercelMode = process.env.VERCEL_MODE === 'true';
     const version = await getVersion();
 
     // Print formatted header
@@ -290,17 +291,21 @@ async function preSetupTasks() {
 
     const directories = await getUserDirectoriesList();
     await migrateGroupChatsMetadataFormat(directories);
-    await checkForNewContent(directories);
-    await diskCache.verify(directories);
-    migrateFlatSecrets(directories);
-    cleanUploads();
-    migrateAccessLog();
+
+    // Vercel functions need very fast cold starts. Skip optional heavy startup jobs.
+    if (!isVercelMode) {
+        await checkForNewContent(directories);
+        await diskCache.verify(directories);
+        migrateFlatSecrets(directories);
+        cleanUploads();
+        migrateAccessLog();
+    }
 
     await settingsInit();
     await statsInit();
 
     const pluginsDirectory = path.join(serverDirectory, 'plugins');
-    const cleanupPlugins = await loadPlugins(app, pluginsDirectory);
+    const cleanupPlugins = isVercelMode ? null : await loadPlugins(app, pluginsDirectory);
     const consoleTitle = process.title;
 
     let isExiting = false;
