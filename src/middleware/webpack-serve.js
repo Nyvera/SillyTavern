@@ -20,15 +20,22 @@ export default function getWebpackServeMiddleware() {
         // In Vercel builds, the hash can differ between build-time and runtime metadata.
         // Resolve the first available dist output folder containing lib.js.
         if (process.env.VERCEL_MODE === 'true') {
-            const distWebpackRoot = path.resolve(process.cwd(), 'dist', '_webpack');
-            if (fs.existsSync(distWebpackRoot)) {
-                const candidates = fs.readdirSync(distWebpackRoot, { withFileTypes: true })
-                    .filter(dirent => dirent.isDirectory())
-                    .map(dirent => path.join(distWebpackRoot, dirent.name, 'output'));
+            const roots = [
+                path.resolve(process.cwd(), 'dist', '_webpack'),
+                path.resolve(process.cwd(), '..', 'dist', '_webpack'),
+            ];
 
-                const existing = candidates.find(candidate => fs.existsSync(path.join(candidate, 'lib.js')));
-                if (existing) {
-                    outputPath = existing;
+            for (const distWebpackRoot of roots) {
+                if (fs.existsSync(distWebpackRoot)) {
+                    const candidates = fs.readdirSync(distWebpackRoot, { withFileTypes: true })
+                        .filter(dirent => dirent.isDirectory())
+                        .map(dirent => path.join(distWebpackRoot, dirent.name, 'output'));
+
+                    const existing = candidates.find(candidate => fs.existsSync(path.join(candidate, 'lib.js')));
+                    if (existing) {
+                        outputPath = existing;
+                        break;
+                    }
                 }
             }
         }
