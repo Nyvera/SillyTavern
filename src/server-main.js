@@ -464,3 +464,4 @@ initUserStorage(globalThis.DATA_ROOT)
     .then(apply404Middleware)
     .then(() => new ServerStartup(app, cliArgs).start())
     .then(postSetupTasks);
+export { app };

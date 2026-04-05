@@ -28,6 +28,7 @@
         "@jimp/wasm-webp": "^1.6.0",
         "@mozilla/readability": "^0.6.0",
         "@popperjs/core": "^2.11.8",
+        "@supabase/supabase-js": "^2.101.1",
         "@zeldafan0225/ai_horde": "^5.2.0",
         "archiver": "^7.0.1",
         "bing-translate-api": "^4.1.0",
@@ -45,6 +46,7 @@
         "csrf-sync": "^4.2.1",
         "diff-match-patch": "^1.0.5",
         "dompurify": "^3.2.6",
+        "dotenv": "^17.4.1",
         "droll": "^0.2.1",
         "env-paths": "^3.0.0",
         "express": "^4.21.0",
@@ -111,7 +113,7 @@
     "license": "AGPL-3.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/SillyTavern/SillyTavern.git"
+        "url": "git+https://github.com/SillyTavern/SillyTavern.git"
     },
     "version": "1.17.0",
     "scripts": {
@@ -129,7 +131,7 @@
         "plugins:install": "node plugins install"
     },
     "bin": {
-        "sillytavern": "./src/server-global.js"
+        "sillytavern": "src/server-global.js"
     },
     "rules": {
         "no-path-concat": "off",
@@ -168,5 +170,15 @@
         "eslint-plugin-jest": "^27.9.0",
         "eslint-plugin-jsdoc": "^48.10.0",
         "eslint-plugin-playwright": "^2.3.0"
-    }
+    },
+    "description": "LLM Frontend for Power Users",
+    "directories": {
+        "test": "tests"
+    },
+    "keywords": [],
+    "author": "",
+    "bugs": {
+        "url": "https://github.com/SillyTavern/SillyTavern/issues"
+    },
+    "homepage": "https://github.com/SillyTavern/SillyTavern#readme"
 }
