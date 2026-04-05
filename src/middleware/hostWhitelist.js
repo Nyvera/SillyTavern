@@ -26,6 +26,10 @@ const validationMiddleware = hostValidationMiddleware({
  * @param {import('express').NextFunction} next Next middleware
  */
 export default function hostWhitelistMiddleware(req, res, next) {
+    if (process.env.VERCEL_MODE === 'true') {
+        return next();
+    }
+
     const hostValue = req.headers.host;
     if (hostWhitelistScan && !isHostAllowed(hostValue, hostWhitelist) && !knownHosts.has(hostValue) && knownHosts.size < maxKnownHosts) {
         const isFirstWarning = knownHosts.size === 0;
