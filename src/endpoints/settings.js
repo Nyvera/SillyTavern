@@ -52,6 +52,10 @@ function triggerAutoSave(handle) {
  * @returns {Array} Parsed files
  */
 function readAndParseFromDirectory(directoryPath, fileExtension = '.json') {
+    if (!fs.existsSync(directoryPath)) {
+        return [];
+    }
+
     const files = fs
         .readdirSync(directoryPath)
         .filter(x => path.parse(x).ext == fileExtension)
@@ -95,6 +99,10 @@ function readPresetsFromDirectory(directoryPath, options = {}) {
         removeFileExtension = false,
         fileExtension = '.json',
     } = options;
+
+    if (!fs.existsSync(directoryPath)) {
+        return { fileContents: [], fileNames: [] };
+    }
 
     const files = fs.readdirSync(directoryPath).sort(sortFunction).filter(x => path.parse(x).ext == fileExtension);
     const fileContents = [];
@@ -217,12 +225,14 @@ router.post('/save', function (request, response) {
 
 // Wintermute's code
 router.post('/get', (request, response) => {
-    let settings;
-    try {
-        const pathToSettings = path.join(request.user.directories.root, SETTINGS_FILE);
-        settings = fs.readFileSync(pathToSettings, 'utf8');
-    } catch (e) {
-        return response.sendStatus(500);
+    const pathToSettings = path.join(request.user.directories.root, SETTINGS_FILE);
+    let settings = '{}';
+    if (fs.existsSync(pathToSettings)) {
+        try {
+            settings = fs.readFileSync(pathToSettings, 'utf8');
+        } catch {
+            settings = '{}';
+        }
     }
 
     // NovelAI Settings
@@ -250,10 +260,11 @@ router.post('/get', (request, response) => {
             sortFunction: sortByName(request.user.directories.koboldAI_Settings), removeFileExtension: true,
         });
 
-    const worldFiles = fs
-        .readdirSync(request.user.directories.worlds)
-        .filter(file => path.extname(file).toLowerCase() === '.json')
-        .sort((a, b) => a.localeCompare(b));
+    const worldFiles = fs.existsSync(request.user.directories.worlds)
+        ? fs.readdirSync(request.user.directories.worlds)
+            .filter(file => path.extname(file).toLowerCase() === '.json')
+            .sort((a, b) => a.localeCompare(b))
+        : [];
     const world_names = worldFiles.map(item => path.parse(item).name);
 
     const themes = readAndParseFromDirectory(request.user.directories.themes);
